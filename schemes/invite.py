@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from schemes.tag import TagResponse
 from typing import List, Optional
-from db.models.invite import InviteStatus
+from db.models.invite import InviteStatus, InviteType
 
 
 class InviteUserResponseScheme(BaseModel):
@@ -10,12 +10,22 @@ class InviteUserResponseScheme(BaseModel):
     avatar: Optional[str] = None
 
 
+class AcceptInviteFromUserScheme(BaseModel):
+    user_id: int
+
+
+class RejectInviteFromUserScheme(BaseModel):
+    user_id: int
+
+
 class AcceptInviteScheme(BaseModel):
     user_id: int
+    team_id: int
 
 
 class RejectInviteScheme(BaseModel):
     user_id: int
+    team_id: int
 
 
 class InviteResponseScheme(BaseModel):
@@ -23,11 +33,13 @@ class InviteResponseScheme(BaseModel):
     user: InviteUserResponseScheme
     team_id: int
     message: str
+    type: InviteType
     status: InviteStatus
 
 
-class InviteScheme(BaseModel):
+class CreateInviteScheme(BaseModel):
     user_id: int
+    team_id: int
     message: str
 
 

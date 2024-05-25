@@ -13,7 +13,7 @@ async def db_lifespan(app: FastAPI):
     await init_db()
     yield
 
-app = FastAPI(lifespan=db_lifespan, debug=config.DEBUG, title='ToDo')
+app = FastAPI(lifespan=db_lifespan, debug=config.DEBUG, title='Hackanova')
 app.include_router(user_router, prefix='/user', tags=['user'])
 app.include_router(team_router, prefix='/team', tags=['team'])
 app.include_router(tag_router, prefix='/tag', tags=['tag'])
