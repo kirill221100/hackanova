@@ -17,7 +17,7 @@ async def get_all_tags(session: AsyncSession):
 
 
 async def create_tag(name: str, session: AsyncSession):
-    tag = Tag(name=name)
+    tag = Tag(name=name.lower())
     session.add(tag)
     await session.commit()
     return tag
