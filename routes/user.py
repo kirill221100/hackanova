@@ -48,10 +48,6 @@ async def get_user_path(user_id: int, session: AsyncSession = Depends(get_sessio
     return await get_user_by_id_with_tags(user_id, session)
 
 
-@user_router.get("/get-users-by-tags", response_model=List[UserResponseScheme])
-async def get_users_by_tags_path(user_id: int, session: AsyncSession = Depends(get_session)):
-    return await get_user_by_id_with_tags(user_id, session)
-
 
 @user_router.get("/{user_id}/get-invitations-from-user", response_model=List[UserInviteResponseScheme])
 async def all_invitations_from_user_path(user_id: int, session: AsyncSession = Depends(get_session)):
