@@ -9,8 +9,8 @@ from db.models.associations import team_users_association_table, team_tags_assoc
 
 class InviteStatus(Enum):
     CREATE = 'create'
-    ACCEPTED = 'accepted'
-    REJECTED = 'rejected'
+    ACCEPT = 'accept'
+    REJECT = 'reject'
 
 
 class Invite(Base):

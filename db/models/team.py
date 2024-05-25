@@ -14,7 +14,7 @@ class Team(Base):
     __tablename__ = 'teams'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    commandDescription: Mapped[str] = mapped_column(nullable=False)
+    description: Mapped[str] = mapped_column(nullable=False)
     task: Mapped[str] = mapped_column(nullable=False)
     tags: Mapped[List["Tag"]] = relationship(back_populates='teams', secondary=team_tags_association_table)
     status: Mapped[TeamStatus] = mapped_column(nullable=False)
