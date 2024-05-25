@@ -14,3 +14,10 @@ async def get_tags_by_names(names: List[str], session: AsyncSession):
 
 async def get_all_tags(session: AsyncSession):
     return (await session.execute(select(Tag))).scalars().all()
+
+
+async def create_tag(name: str, session: AsyncSession):
+    tag = Tag(name=name)
+    session.add(tag)
+    await session.commit()
+    return tag

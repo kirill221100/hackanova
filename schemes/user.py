@@ -1,6 +1,24 @@
-from pydantic import BaseModel, model_validator, StringConstraints
-from typing import Annotated
+from pydantic import BaseModel, model_validator, EmailStr
+from typing import Optional, List, Annotated
+from db.models.user import UserTeamStatus
+from schemes.tag import TagResponse
+from annotated_types import Len
 
 
-class UserResponse(BaseModel):
-    pass
+class UserCreateScheme(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    experience: Optional[str] = None
+    education: Optional[str] = None
+    about_me: Optional[str] = None
+    hackathon_search: bool
+    job_search: bool
+    status_team: UserTeamStatus
+    avatar: Optional[str] = None
+    tags: Annotated[List[str], Len(min_length=1)]
+
+
+class UserResponseScheme(UserCreateScheme):
+    tags: List[TagResponse]

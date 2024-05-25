@@ -1,7 +1,11 @@
 from pydantic import BaseModel
-from db.models.tag import T
 
 
 class TagResponse(BaseModel):
     id: int
-    text: str
+    name: str
+
+
+class GetTeamByTagsSchemeResponse(BaseModel):
+    id: int
+    name: str

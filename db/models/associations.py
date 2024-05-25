@@ -20,7 +20,7 @@ team_tags_association_table = Table(
 
 
 tag_users_association_table = Table(
-    "team_users_association_table",
+    "tag_users_association_table",
     Base.metadata,
     Column("user_id", ForeignKey("users.id"), primary_key=True),
     Column("tag_id", ForeignKey("tags.id"), primary_key=True),
