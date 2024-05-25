@@ -36,7 +36,7 @@ async def set_team_desc_and_tags(team_id: int, data: TeamSearchScheme, session: 
     return {"message": "create"}
 
 
-async def get_team_by_tags(tags: List[str], session: AsyncSession):
+async def get_teams_by_tags(tags: List[str], session: AsyncSession):
     return (await session.execute(
         select(Team).join(Team.tags).filter(Team.tags.any(Tag.name.in_(tags))).options(contains_eager(Team.tags)))
             ).unique().scalars().all()
