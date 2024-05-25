@@ -4,6 +4,8 @@ from typing import List
 from db.models.associations import team_users_association_table, team_tags_association_table
 from enum import Enum
 
+from db.models.user import User
+
 
 class TeamStatus(Enum):
     COMPLETE = 'complete'
@@ -20,4 +22,5 @@ class Team(Base):
     status: Mapped[TeamStatus] = mapped_column(nullable=False)
     participants: Mapped[List["User"]] = relationship(back_populates='commands', secondary=team_users_association_table)
     invites: Mapped[List["Invites"]] = relationship(back_populates='team')
+    users: Mapped[List["User"]] = relationship("User", secondary=team_users_association_table, back_populates="teams") # Отношение к пользователям через ассоциативную таблицу
 
