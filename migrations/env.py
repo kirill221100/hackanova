@@ -34,7 +34,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 config.set_main_option('sqlalchemy.url',
-                       f"postgresql+asyncpg://{cfg.POSTGRES_USER}:{cfg.POSTGRES_PASSWORD}@{cfg.POSTGRES_HOST}:5432/{cfg.POSTGRES_DB}" + '?async_fallback=True')
+                       f"postgresql+asyncpg://{cfg.POSTGRES_USER}:{cfg.POSTGRES_PASSWORD}@{cfg.POSTGRES_HOST}:{cfg.POSTGRES_PORT}/{cfg.POSTGRES_DB}" + '?async_fallback=True')
 
 
 def run_migrations_offline() -> None:
