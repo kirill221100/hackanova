@@ -17,7 +17,9 @@ class UserCreateScheme(BaseModel):
     job_search: bool
     status_team: UserTeamStatus
     avatar: Optional[str] = None
-    contact: Optional[str] = None
+    vk: Optional[str] = None
+    github: Optional[str] = None
+    telegram: Optional[str] = None
     tags: Annotated[List[str], Len(min_length=1)]
 
 
