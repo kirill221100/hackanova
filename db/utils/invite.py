@@ -41,7 +41,8 @@ async def create_invite(invite_type: InviteType, data: CreateInviteScheme, sessi
         try:
             invite = Invite(type=invite_type)
             for k, v in data:
-                setattr(invite, k, v)
+                if v is not None:
+                    setattr(invite, k, v)
             session.add(invite)
             await session.commit()
             return {'message': 'create'}

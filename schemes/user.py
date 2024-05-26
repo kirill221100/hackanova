@@ -41,6 +41,7 @@ class UserUpdateScheme(UserCreateScheme):
     @classmethod
     def validate_given_values(cls, field_values):
         dict_values = dict(field_values)
-        vals = list(map(lambda x: bool(dict_values[x]), dict_values))
+        vals = list(map(lambda x: dict_values[x] is not None, dict_values))
+        print(vals)
         assert vals.count(True) >= 1, "Нет данных на которые нужно изменить"
         return field_values

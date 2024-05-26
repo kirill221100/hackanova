@@ -74,7 +74,7 @@ async def get_teams_by_tags(tags: List[str], session: AsyncSession):
 async def create_team(data: TeamCreateScheme, session: AsyncSession):
     team = Team()
     for k, v in data:
-        if k != 'tags':
+        if k != 'tags' and v is not None:
             setattr(team, k, v)
 
     team.tags = await get_tags_by_names(data.tags, session)

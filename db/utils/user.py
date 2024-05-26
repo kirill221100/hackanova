@@ -34,7 +34,7 @@ async def get_users_by_tags(tags: List[str], session: AsyncSession):
 async def create_user(data: UserCreateScheme, session: AsyncSession):
     user = User()
     for k, v in data:
-        if k != 'tags':
+        if k != 'tags' and v is not None:
             setattr(user, k, v)
     tags = await get_tags_by_names(data.tags, session)
     user.tags = tags
@@ -56,7 +56,7 @@ async def update_tags_on_user(user_id: int, names: List[str], session: AsyncSess
 async def update_user_profile(user_id: int, data: UserUpdateScheme, session: AsyncSession):
     user = await get_user_by_id_with_tags(user_id, session)
     for k, v in data:
-        if k != 'tags' and v:
+        if k != 'tags' and v is not None:
             setattr(user, k, v)
     if data.tags:
         tags = await get_tags_by_names(data.tags, session)
