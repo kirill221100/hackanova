@@ -6,12 +6,14 @@ from db.models.team import TeamStatus
 
 
 class TeamSearchScheme(BaseModel):
-    description: str
+    team_description: str
+    search_user_description: str
     tags: List[str]
 
 
 class TeamSearchResponseScheme(BaseModel):
-    description: str
+    team_description: str
+    search_user_description: str
     tags: List[TagResponse]
 
 
@@ -24,7 +26,8 @@ class TeamSearchUserScheme(BaseModel):
 class TeamResponseScheme(BaseModel):
     id: int
     name: str
-    description: str
+    team_description: str
+    search_user_description: str
     task: str
     participants: List[TeamSearchUserScheme]
     tags: List[TagResponse]
@@ -32,7 +35,8 @@ class TeamResponseScheme(BaseModel):
 
 class TeamCreateScheme(BaseModel):
     name: str
-    description: str
+    team_description: str
+    search_user_description: str
     task: str
     tags: Annotated[List[str], Len(min_length=1)]
     status: TeamStatus

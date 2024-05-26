@@ -25,3 +25,10 @@ tag_users_association_table = Table(
     Column("user_id", ForeignKey("users.id"), primary_key=True),
     Column("tag_id", ForeignKey("tags.id"), primary_key=True),
 )
+
+contact_users_association_table = Table(
+    "contact_users_association_table",
+    Base.metadata,
+    Column("user_id", ForeignKey("users.id"), primary_key=True),
+    Column("contact_id", ForeignKey("contacts.id"), primary_key=True),
+)

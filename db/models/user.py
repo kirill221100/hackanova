@@ -30,4 +30,4 @@ class User(Base):
     invitations: Mapped[List["Invite"]] = relationship(back_populates='user')
     tags: Mapped[List["Tag"]] = relationship("Tag", secondary=tag_users_association_table, back_populates="users")
     teams: Mapped[List["Team"]] = relationship("Team", secondary=team_users_association_table, back_populates="participants")  # Отношение к командам через ассоциативную таблицу
-    сontact: Mapped[str] = mapped_column(nullable=True)
+    сontacts: Mapped[List["Contact"]] = mapped_column(nullable=True)
