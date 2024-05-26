@@ -25,6 +25,14 @@ async def get_team_by_id_with_users_and_tags(team_id: int, session: AsyncSession
     raise HTTPException(404, 'Нет команды с таким id')
 
 
+async def get_team_by_id_with_users(team_id: int, session: AsyncSession):
+    if res := (await session.execute(
+        select(Team).filter_by(id=team_id).options(selectinload(Team.participants)))
+            ).scalar_one_or_none():
+        return res
+    raise HTTPException(404, 'Нет команды с таким id')
+
+
 async def get_all_teams_with_users_and_tags(session: AsyncSession):
     return (await session.execute(
         select(Team).options(selectinload(Team.participants), selectinload(Team.tags)))

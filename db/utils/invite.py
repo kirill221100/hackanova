@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from db.models.invite import Invite, InviteStatus, InviteType
 from db.utils.user import get_user_by_id
-from db.utils.team import get_team_by_id
+from db.utils.team import get_team_by_id, get_team_by_id_with_users
 from fastapi import HTTPException
 from schemes.invite import CreateInviteScheme, AcceptInviteScheme, RejectInviteScheme
 from typing import Optional
@@ -54,7 +54,7 @@ async def accept_invite(invite_type: InviteType, data: AcceptInviteScheme, sessi
     if invite := await get_invite(invite_type, data.team_id, data.user_id, session):
         invite.status = InviteStatus.ACCEPT
         user = await get_user_by_id(data.user_id, session)
-        team = await get_team_by_id(data.team_id, session)
+        team = await get_team_by_id_with_users(data.team_id, session)
         if user not in team.participants:
             team.participants.append(user)
         await session.commit()

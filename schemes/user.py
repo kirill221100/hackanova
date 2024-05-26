@@ -1,4 +1,4 @@
-from pydantic import BaseModel, model_validator, EmailStr
+from pydantic import BaseModel, model_validator, EmailStr, model_validator
 from typing import Optional, List, Annotated
 from db.models.user import UserTeamStatus
 from schemes.tag import TagResponse
@@ -26,3 +26,21 @@ class UserCreateScheme(BaseModel):
 class UserResponseScheme(UserCreateScheme):
     id: int
     tags: List[TagResponse]
+
+
+class UserUpdateScheme(UserCreateScheme):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    hackathon_search: Optional[bool] = None
+    job_search: Optional[bool] = None
+    status_team: Optional[UserTeamStatus] = None
+    tags: Optional[Annotated[List[str], Len(min_length=1)]] = None
+
+    @model_validator(mode='after')
+    @classmethod
+    def validate_given_values(cls, field_values):
+        dict_values = dict(field_values)
+        vals = list(map(lambda x: bool(dict_values[x]), dict_values))
+        assert vals.count(True) >= 1, "Нет данных на которые нужно изменить"
+        return field_values

@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, contains_eager
-from schemes.user import UserCreateScheme
+from schemes.user import UserCreateScheme, UserUpdateScheme
 from db.models.user import User
 from db.models.tag import Tag
 from db.utils.tag import get_tags_by_names
@@ -51,3 +51,16 @@ async def update_tags_on_user(user_id: int, names: List[str], session: AsyncSess
     user.tags = tags
     await session.commit()
     return {'message': 'updated'}
+
+
+async def update_user_profile(user_id: int, data: UserUpdateScheme, session: AsyncSession):
+    user = await get_user_by_id_with_tags(user_id, session)
+    for k, v in data:
+        if k != 'tags' and v:
+            setattr(user, k, v)
+    if data.tags:
+        tags = await get_tags_by_names(data.tags, session)
+        user.tags = tags
+    #await session.refresh(user)
+    await session.commit()
+    return user

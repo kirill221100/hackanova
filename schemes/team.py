@@ -43,6 +43,7 @@ class TeamCreateScheme(BaseModel):
 
 
 class TeamCreateResponseScheme(TeamCreateScheme):
+    id: int
     tags: List[TagResponse]
     status: TeamStatus
 
