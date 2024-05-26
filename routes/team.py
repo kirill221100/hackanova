@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_setup import get_session
-from db.utils.team import get_team_by_id, get_team_desc_and_tags, set_team_desc_and_tags, create_team
+from db.utils.team import get_team_by_id, get_team_desc_and_tags, set_team_desc_and_tags, create_team, get_all_teams_with_users_and_tags
 from db.utils.invite import create_invite, accept_invite, reject_invite, get_invitations
 from schemes.team import TeamSearchResponseScheme, TeamResponseScheme, TeamSearchScheme, TeamCreateScheme, TeamCreateResponseScheme
 from schemes.invite import InviteResponseScheme, AcceptInviteScheme, RejectInviteScheme, CreateInviteScheme, UserInviteResponseScheme
@@ -15,6 +15,11 @@ team_router = APIRouter()
 @team_router.get('/{team_id}/getTeam', response_model=TeamResponseScheme)
 async def get_team_by_id_path(team_id: int, session: AsyncSession = Depends(get_session)):
     return await get_team_by_id(team_id, session)
+
+
+@team_router.get("/get-all-teams", response_model=List[TeamResponseScheme])
+async def get_all_teams_path(session: AsyncSession = Depends(get_session)):
+    return await get_all_teams_with_users_and_tags(session)
 
 
 @team_router.get('/{team_id}/search', response_model=TeamSearchResponseScheme)

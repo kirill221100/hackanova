@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 from db.db_setup import get_session
-
-from db.utils.tag import create_tag, get_all_tags, update_tags_on_user
-from db.utils.team import get_team_by_tags
-
+from db.utils.tag import create_tag, get_all_tags
+from db.utils.team import get_teams_by_tags, update_tags_on_team
+from db.utils.user import get_users_by_tags, update_tags_on_user
 from schemes.tag import TagResponse, GetTeamByTagsSchemeResponse
 from schemes.user import UserResponseScheme
 
@@ -33,6 +32,21 @@ async def get_tag_list_path(session: AsyncSession = Depends(get_session)):
     return await get_all_tags(session)
 
 
-@tag_router.post("/user/{user_id}/add_tags", response_model=List[str])
-async def add_tags_to_user(user_id: int, tags: List[str], session: AsyncSession = Depends(get_session)):
-    return await update_tags_on_user(user_id=user_id, tags=tags, session=session)
+@tag_router.post("/{user_id}/update-user-tags", response_model=dict)
+async def update_user_tags_path(user_id: int, tags: List[str], session: AsyncSession = Depends(get_session)):
+    """
+    пример работы:
+    например до изменений у юзера были тэги: python и backend.
+    после отправки листа [python, java, ml] у юзера тэги будут такими: python, java, ml
+    """
+    return await update_tags_on_user(user_id=user_id, names=tags, session=session)
+
+
+@tag_router.post("/{team_id}/update-team-tags", response_model=dict)
+async def update_team_tags_path(team_id: int, tags: List[str], session: AsyncSession = Depends(get_session)):
+    """
+    пример работы:
+    например до изменений у команды были тэги: python и backend.
+    после отправки листа [python, java, ml] у юзера тэги будут такими: python, java, ml
+    """
+    return await update_tags_on_team(team_id=team_id, names=tags, session=session)

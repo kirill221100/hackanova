@@ -27,6 +27,7 @@ class TeamResponseScheme(BaseModel):
     description: str
     task: str
     participants: List[TeamSearchUserScheme]
+    tags: List[TagResponse]
 
 
 class TeamCreateScheme(BaseModel):
