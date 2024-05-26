@@ -8,9 +8,6 @@ class Config(BaseSettings):
     POSTGRES_DB: str
     POSTGRES_HOST: str
     POSTGRES_PORT: int
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
-    JWT_SECRET_KEY: str
-    ALGORITHM: str
     DEBUG: bool
     model_config = SettingsConfigDict(env_file='.env')
 
