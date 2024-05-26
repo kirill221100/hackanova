@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload, contains_eager
-from db.models.team import Team
+from db.models.team import Team, TeamStatus
 from db.models.tag import Tag
 from db.utils.tag import get_tags_by_names
 from fastapi import HTTPException
@@ -10,15 +10,19 @@ from typing import List
 
 
 async def get_team_by_id(team_id: int, session: AsyncSession):
-    return (await session.execute(
-        select(Team).filter_by(id=team_id).options(selectinload(Team.participants)))
-            ).scalar_one_or_none()
+    if res := (await session.execute(
+        select(Team).filter_by(id=team_id))
+            ).scalar_one_or_none():
+        return res
+    raise HTTPException(404, 'Нет команды с таким id')
 
 
 async def get_team_by_id_with_users_and_tags(team_id: int, session: AsyncSession):
-    return (await session.execute(
+    if res := (await session.execute(
         select(Team).filter_by(id=team_id).options(selectinload(Team.participants), selectinload(Team.tags)))
-            ).scalar_one_or_none()
+            ).scalar_one_or_none():
+        return res
+    raise HTTPException(404, 'Нет команды с таким id')
 
 
 async def get_all_teams_with_users_and_tags(session: AsyncSession):
@@ -28,15 +32,19 @@ async def get_all_teams_with_users_and_tags(session: AsyncSession):
 
 
 async def get_team_by_id_with_tags(team_id: int, session: AsyncSession):
-    return (await session.execute(
+    if res := (await session.execute(
         select(Team).filter_by(id=team_id).options(selectinload(Team.tags)))
-            ).scalar_one_or_none()
+            ).scalar_one_or_none():
+        return res
+    raise HTTPException(404, 'Нет команды с таким id')
 
 
 async def get_team_desc_and_tags(team_id: int, session: AsyncSession):
-    return (await session.execute(
+    if res := (await session.execute(
         select(Team).filter_by(id=team_id).options(selectinload(Team.tags)))
-            ).scalar_one_or_none()
+            ).scalar_one_or_none():
+        return res
+    raise HTTPException(404, 'Нет команды с таким id')
 
 
 async def set_team_desc_and_tags(team_id: int, data: TeamSearchScheme, session: AsyncSession):
@@ -73,3 +81,10 @@ async def update_tags_on_team(team_id: int, names: List[str], session: AsyncSess
     await session.commit()
     return {'message': 'updated'}
 
+
+async def change_team_status(team_id: int, status: TeamStatus, session: AsyncSession):
+    team = await get_team_by_id(team_id, session)
+    if team.status != status:
+        team.status = status
+        await session.commit()
+    return {'message': 'Done'}

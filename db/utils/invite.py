@@ -7,6 +7,7 @@ from db.utils.team import get_team_by_id
 from fastapi import HTTPException
 from schemes.invite import CreateInviteScheme, AcceptInviteScheme, RejectInviteScheme
 from typing import Optional
+from sqlalchemy.exc import IntegrityError
 
 
 async def get_invitations_by_team_id(team_id: int, session: AsyncSession):
@@ -37,28 +38,33 @@ async def get_invite(invite_type: InviteType, team_id: int, user_id: int, sessio
 
 async def create_invite(invite_type: InviteType, data: CreateInviteScheme, session: AsyncSession):
     if not await get_invite(invite_type, data.team_id, data.user_id, session):
-        invite = Invite(type=invite_type)
-        for k, v in data:
-            setattr(invite, k, v)
-        session.add(invite)
-        await session.commit()
-        return {'message': 'create'}
+        try:
+            invite = Invite(type=invite_type)
+            for k, v in data:
+                setattr(invite, k, v)
+            session.add(invite)
+            await session.commit()
+            return {'message': 'create'}
+        except IntegrityError as e:
+            raise HTTPException(404, 'Такого/ой юзера или команды нет')
     raise HTTPException(409, 'Такое приглашение уже есть')
 
 
 async def accept_invite(invite_type: InviteType, data: AcceptInviteScheme, session: AsyncSession):
-    invite = await get_invite(invite_type, data.team_id, data.user_id, session)
-    invite.status = InviteStatus.ACCEPT
-    user = await get_user_by_id(data.user_id, session)
-    team = await get_team_by_id(data.team_id, session)
-    if user not in team.participants:
-        team.participants.append(user)
-    await session.commit()
-    return {'message': 'accept'}
+    if invite := await get_invite(invite_type, data.team_id, data.user_id, session):
+        invite.status = InviteStatus.ACCEPT
+        user = await get_user_by_id(data.user_id, session)
+        team = await get_team_by_id(data.team_id, session)
+        if user not in team.participants:
+            team.participants.append(user)
+        await session.commit()
+        return {'message': 'accept'}
+    raise HTTPException(404, 'Нет такого инвайта')
 
 
 async def reject_invite(invite_type: InviteType, data: RejectInviteScheme, session: AsyncSession):
-    invite = await get_invite(invite_type, data.team_id, data.user_id, session)
-    invite.status = InviteStatus.REJECT
-    await session.commit()
-    return {'message': 'reject'}
+    if invite := await get_invite(invite_type, data.team_id, data.user_id, session):
+        invite.status = InviteStatus.REJECT
+        await session.commit()
+        return {'message': 'reject'}
+    raise HTTPException(404, 'Нет такого инвайта')

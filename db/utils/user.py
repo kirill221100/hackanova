@@ -14,7 +14,9 @@ async def get_user_by_id(user_id: int, session: AsyncSession):
 
 
 async def get_user_by_id_with_tags(user_id: int, session: AsyncSession):
-    return (await session.execute(select(User).filter_by(id=user_id).options(selectinload(User.tags)))).scalar_one_or_none()
+    if user := (await session.execute(select(User).filter_by(id=user_id).options(selectinload(User.tags)))).scalar_one_or_none():
+        return user
+    raise HTTPException(404, 'Нет юзера с таким id')
 
 
 async def get_all_users_with_tags(session: AsyncSession):

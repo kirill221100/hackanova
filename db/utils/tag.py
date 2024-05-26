@@ -3,6 +3,7 @@ from sqlalchemy import select, literal
 from sqlalchemy.orm import selectinload
 from db.models.tag import Tag
 from typing import List
+from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 
 
@@ -17,7 +18,10 @@ async def get_all_tags(session: AsyncSession):
 
 
 async def create_tag(name: str, session: AsyncSession):
-    tag = Tag(name=name.lower())
-    session.add(tag)
-    await session.commit()
-    return tag
+    try:
+        tag = Tag(name=name.lower())
+        session.add(tag)
+        await session.commit()
+        return tag
+    except IntegrityError as e:
+        raise HTTPException(409, detail='Такой тег уже есть')

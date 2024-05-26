@@ -17,7 +17,7 @@ class Team(Base):
     description: Mapped[str] = mapped_column(nullable=False)
     task: Mapped[str] = mapped_column(nullable=False)
     tags: Mapped[List["Tag"]] = relationship(back_populates='teams', secondary=team_tags_association_table)
-    status: Mapped[TeamStatus] = mapped_column(nullable=False)
+    status: Mapped[TeamStatus] = mapped_column(default=TeamStatus.NOT_COMPLETE, nullable=False)
     participants: Mapped[List["User"]] = relationship(back_populates='teams', secondary=team_users_association_table)
     invitations: Mapped[List["Invite"]] = relationship(back_populates='team')
 

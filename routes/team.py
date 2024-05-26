@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.db_setup import get_session
-from db.utils.team import get_team_by_id_with_users_and_tags, get_team_desc_and_tags, set_team_desc_and_tags, create_team, get_all_teams_with_users_and_tags
+from db.utils.team import get_team_by_id_with_users_and_tags, get_team_desc_and_tags, set_team_desc_and_tags, create_team, get_all_teams_with_users_and_tags, change_team_status
 from db.utils.invite import create_invite, accept_invite, reject_invite, get_invitations
 from schemes.team import TeamSearchResponseScheme, TeamResponseScheme, TeamSearchScheme, TeamCreateScheme, TeamCreateResponseScheme
 from schemes.invite import InviteResponseScheme, AcceptInviteScheme, RejectInviteScheme, CreateInviteScheme, UserInviteResponseScheme
 from db.models.invite import InviteType
+from db.models.team import TeamStatus
 from typing import List, Optional
 
 
@@ -66,3 +67,8 @@ async def reject_invite_path(data: RejectInviteScheme, session: AsyncSession = D
 async def create_team_path(data: TeamCreateScheme, session: AsyncSession = Depends(get_session)):
     """только для тестов, не прод"""
     return await create_team(data, session)
+
+
+@team_router.patch('/{team_id}/change-team-status', response_model=dict)
+async def change_team_status_path(team_id: int, status: TeamStatus, session: AsyncSession = Depends(get_session)):
+    return await change_team_status(team_id, status, session)

@@ -27,6 +27,7 @@ class TeamResponseScheme(BaseModel):
     description: str
     task: str
     participants: List[TeamSearchUserScheme]
+    status: TeamStatus
     tags: List[TagResponse]
 
 
@@ -35,11 +36,11 @@ class TeamCreateScheme(BaseModel):
     description: str
     task: str
     tags: Annotated[List[str], Len(min_length=1)]
-    status: TeamStatus
 
 
 class TeamCreateResponseScheme(TeamCreateScheme):
     tags: List[TagResponse]
+    status: TeamStatus
 
 
 class TeamByTags(BaseModel):

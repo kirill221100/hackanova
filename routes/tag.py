@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Optional
+from typing import List, Annotated
+from annotated_types import Len
 from db.db_setup import get_session
 from db.utils.tag import create_tag, get_all_tags
 from db.utils.team import get_teams_by_tags, update_tags_on_team
@@ -18,12 +19,13 @@ async def create_tag_path(text: str, session: AsyncSession = Depends(get_session
 
 
 @tag_router.get("/get-teams-by-tags", response_model=List[GetTeamByTagsSchemeResponse])
-async def get_teams_by_tags_path(tags: List[str] = Query(None), session: AsyncSession = Depends(get_session)):
+async def get_teams_by_tags_path(tags: Annotated[List[str], Len(min_length=1)] = Query(), session: AsyncSession = Depends(get_session)):
+    print(tags)
     return await get_teams_by_tags(tags, session)
 
 
 @tag_router.get("/get-users-by-tags", response_model=List[UserResponseScheme])
-async def get_users_by_tags_path(tags: List[str] = Query(None), session: AsyncSession = Depends(get_session)):
+async def get_users_by_tags_path(tags: Annotated[List[str], Len(min_length=1)] = Query(), session: AsyncSession = Depends(get_session)):
     return await get_users_by_tags(tags, session)
 
 
@@ -33,7 +35,7 @@ async def get_tag_list_path(session: AsyncSession = Depends(get_session)):
 
 
 @tag_router.post("/{user_id}/update-user-tags", response_model=dict)
-async def update_user_tags_path(user_id: int, tags: List[str], session: AsyncSession = Depends(get_session)):
+async def update_user_tags_path(user_id: int, tags: Annotated[List[str], Len(min_length=1)], session: AsyncSession = Depends(get_session)):
     """
     пример работы:
     например до изменений у юзера были тэги: python и backend.
@@ -43,7 +45,7 @@ async def update_user_tags_path(user_id: int, tags: List[str], session: AsyncSes
 
 
 @tag_router.post("/{team_id}/update-team-tags", response_model=dict)
-async def update_team_tags_path(team_id: int, tags: List[str], session: AsyncSession = Depends(get_session)):
+async def update_team_tags_path(team_id: int, tags: Annotated[List[str], Len(min_length=1)], session: AsyncSession = Depends(get_session)):
     """
     пример работы:
     например до изменений у команды были тэги: python и backend.
