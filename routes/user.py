@@ -57,6 +57,6 @@ async def send_invite_path(data: CreateInviteScheme, session: AsyncSession = Dep
     return await create_invite(InviteType.TO_TEAM, data, session)
 
 
-@user_router.put("/user/{user_id}/update-Profile", response_model=UserResponseScheme)
+@user_router.put("/{user_id}/update-Profile", response_model=UserResponseScheme)
 async def update_user_profile_path(data: UserUpdateScheme, session: AsyncSession = Depends(get_session)):
     return await update_user_profile(data, session)
