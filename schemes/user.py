@@ -20,6 +20,11 @@ class UserCreateScheme(BaseModel):
     contacts: Optional[List[str]] = None
     tags: Annotated[List[str], Len(min_length=1)]
 
+
 class UserResponseScheme(UserCreateScheme):
     id: int
     tags: List[TagResponse]
+
+
+class UserUpdateScheme(UserCreateScheme):
+    id: int

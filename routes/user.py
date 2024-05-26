@@ -2,12 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 from db.db_setup import get_session
-from db.utils.user import create_user, get_user_by_id_with_tags, get_all_users_with_tags
+from db.utils.user import create_user, get_user_by_id_with_tags, get_all_users_with_tags, update_user_profile
 from db.utils.invite import get_invitations, InviteType, accept_invite, reject_invite, create_invite
 from schemes.invite import UserInviteResponseScheme, AcceptInviteScheme, RejectInviteScheme, CreateInviteScheme
-from schemes.user import UserCreateScheme, UserResponseScheme
+from schemes.user import UserCreateScheme, UserResponseScheme, UserUpdateScheme
 from db.models.invite import InviteType
-
 
 user_router = APIRouter()
 
@@ -57,3 +56,7 @@ async def send_invite_path(data: CreateInviteScheme, session: AsyncSession = Dep
     """отправить приглашение в команду"""
     return await create_invite(InviteType.TO_TEAM, data, session)
 
+
+@user_router.put("/user/{user_id}/update-Profile", response_model=UserResponseScheme)
+async def update_user_profile_path(data: UserUpdateScheme, session: AsyncSession = Depends(get_session)):
+    return await update_user_profile(data, session)
